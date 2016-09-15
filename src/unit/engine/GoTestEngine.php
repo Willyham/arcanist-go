@@ -110,7 +110,7 @@ final class GoTestEngine extends ArcanistUnitTestEngine {
 
   protected function useRace() {
     $default = idx($this->getDefaultConfig(), self::USE_RACE_KEY);
-    if ($this->getConfig(self::USE_RACE_KEY, $default) === false) {
+    if ($this->getConfig(self::USE_RACE_KEY, $default) === "false") {
       return false;
     }
 
@@ -124,7 +124,7 @@ final class GoTestEngine extends ArcanistUnitTestEngine {
 
   protected function useGodep() {
     $default = idx($this->getDefaultConfig(), self::USE_GODEP_KEY);
-    if ($this->getConfig(self::USE_GODEP_KEY, $default) === false) {
+    if ($this->getConfig(self::USE_GODEP_KEY, $default) === "false") {
       return false;
     }
 
@@ -137,7 +137,7 @@ final class GoTestEngine extends ArcanistUnitTestEngine {
 
   protected function useShort() {
     $default = idx($this->getDefaultConfig(), self::USE_SHORT_KEY);
-    if ($this->getConfig(self::USE_GODEP_KEY, $default) === true) {
+    if ($this->getConfig(self::USE_SHORT_KEY, $default) === "true") {
       return true;
     }
     return false;
