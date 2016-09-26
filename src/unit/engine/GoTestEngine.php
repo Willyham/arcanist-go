@@ -119,7 +119,6 @@ final class GoTestEngine extends ArcanistUnitTestEngine {
     }
 
     $cmd .= ' ./';
-    echo $cmd;
     return $cmd;
   }
 

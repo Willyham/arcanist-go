@@ -28,7 +28,6 @@ final class GoCoverageProfileParser {
   public function generateStrings() {
     $output = array();
     foreach ($this->resultSets as $file => $resultSet) {
-      var_dump($resultSet);
       $output[$file] = $this->generateString($resultSet);
     }
     return $output;
@@ -78,7 +77,6 @@ final class CoverageResultSet {
 
   public function addResult($result) {
     array_push($this->results, $result);
-    var_dump($this->results);
   }
 
   public function getNumberOfLines() {
