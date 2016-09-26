@@ -8,6 +8,7 @@ final class GoTestEngine extends ArcanistUnitTestEngine {
   const USE_GODEP_KEY = 'unit.go.godep';
   const USE_RACE_KEY = 'unit.go.race';
   const USE_SHORT_KEY = 'unit.go.short';
+  const REPORT_COVERAGE = 'unit.go.coverage';
   private $projectRoot;
 
   public function run() {
@@ -57,6 +58,15 @@ final class GoTestEngine extends ArcanistUnitTestEngine {
         $this->resolveFuture($package, $future));
     }
 
+    if ($this->shouldReportCoverage()) {
+      $coverage = Filesystem::readFile($this->projectRoot . '/coverage.out');
+      $coverageParser = new GoCoverageProfileParser($coverage);
+      $coverageStrings = $coverageParser->generateStrings();
+      foreach ($results as $result) {
+        $result->setCoverage($coverageStrings);
+      }
+    }
+
     return $results;
   }
 
@@ -81,9 +91,10 @@ final class GoTestEngine extends ArcanistUnitTestEngine {
 
   protected function getDefaultConfig() {
     return array(
-      self::USE_GODEP_KEY => false,
-      self::USE_RACE_KEY  => true,
-      self::USE_SHORT_KEY => false,
+      self::USE_GODEP_KEY => "false",
+      self::USE_RACE_KEY  => "true",
+      self::USE_SHORT_KEY => "false",
+      self::REPORT_COVERAGE => "true"
     );
   }
 
@@ -103,8 +114,12 @@ final class GoTestEngine extends ArcanistUnitTestEngine {
       $cmd .= ' -race';
     }
 
-    $cmd .= ' ./';
+    if ($this->shouldReportCoverage()) {
+      $cmd .= ' -coverprofile=coverage.out';
+    }
 
+    $cmd .= ' ./';
+    echo $cmd;
     return $cmd;
   }
 
@@ -138,6 +153,14 @@ final class GoTestEngine extends ArcanistUnitTestEngine {
   protected function useShort() {
     $default = idx($this->getDefaultConfig(), self::USE_SHORT_KEY);
     if ($this->getConfig(self::USE_SHORT_KEY, $default) === "true") {
+      return true;
+    }
+    return false;
+  }
+
+  protected function shouldReportCoverage() {
+    $default = idx($this->getDefaultConfig(), self::REPORT_COVERAGE);
+    if ($this->getConfig(self::REPORT_COVERAGE, $default) === "true") {
       return true;
     }
     return false;
